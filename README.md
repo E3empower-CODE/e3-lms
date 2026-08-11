@@ -2,48 +2,50 @@
 
 E3 Empower LMS is a planned learning-management platform for E3 Empower Africa Limited and the E3 Empower Institute of Technology. It connects public registration, admissions, enrollment, learning, attendance, assessment, finance, progress, and certification in one system.
 
-> **Current status:** This repository contains the project plan and setup blueprint. The Django and React applications have not been scaffolded yet. Follow the bootstrap steps below when implementation begins.
+> **Current status:** Phase 1 is in progress. The React/Vite JavaScript starter is scaffolded and builds successfully. Django and the remaining frontend libraries are not installed because dependency downloads timed out; PostgreSQL and Redis are not available locally. See the current audit and task statuses in `PLAN.md` before continuing.
 
-See [PLAN.md](./PLAN.md) for scope, architecture, business rules, delivery sprints, validation, risks, and MVP exit criteria.
+See [PLAN.md](./PLAN.md) for authoritative status and implementation order, [API.md](./API.md) for API conventions, [DATABASE.md](./DATABASE.md) for data boundaries, and [DEPLOYMENT.md](./DEPLOYMENT.md) for the production blueprint.
 
 ## Prerequisites
 
 Install these tools before bootstrapping the project:
 
 - Git
-- Python 3.12 or newer
+- Python 3.12 or newer (Python 3.14.6 was detected during the Phase 1 audit)
 - Node.js 20 LTS or newer with npm
 - PostgreSQL 16 or newer
 - Redis 7 or newer
 
 On Windows, Redis can be run through Docker Desktop or WSL. Docker is optional for local development but recommended for consistent PostgreSQL and Redis services.
 
-## Planned Repository Layout
+## Repository Layout
 
 ```text
 e3-lms/
-├── backend/       # Django REST API
-├── frontend/      # React/Vite application
+├── backend/       # Django REST API (pending dependency installation)
+├── frontend/      # React/Vite application (scaffolded)
 ├── PLAN.md
 └── README.md
 ```
 
 ## Bootstrap the Backend
 
-Run these commands from the repository root in PowerShell:
+Install [`uv`](https://docs.astral.sh/uv/) first. The repository uses `backend/pyproject.toml` as the Python dependency source of truth and commits `backend/uv.lock`; do not use pip, Poetry, Pipenv, Conda, or a manually managed virtual environment.
+
+From a fresh clone, run:
 
 ```powershell
-New-Item -ItemType Directory backend
 Set-Location backend
-py -3.12 -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install --upgrade pip
-pip install django djangorestframework psycopg[binary] django-cors-headers django-filter drf-spectacular pillow celery redis pytest pytest-django
-django-admin startproject config .
-pip freeze > requirements.txt
+uv sync
 ```
 
-Create Django apps as they are reached in the implementation plan; do not create empty apps for all future domains at once. Start with accounts, courses, admissions, and audit.
+`uv sync` installs the pinned Python dependencies into an ignored `.venv`. There is no activation step; run backend commands through `uv run`. When dependencies change, use `uv add`/`uv remove` and commit the synchronized `pyproject.toml` and `uv.lock` together.
+
+Create additional Django apps only when their implementation phase begins:
+
+```powershell
+uv run python manage.py startapp <app_name> apps\<app_name>
+```
 
 Create `backend/.env.example` with safe placeholders:
 
@@ -107,19 +109,20 @@ PostgreSQL and Redis must be running first. Then start the API:
 
 ```powershell
 Set-Location backend
-.\.venv\Scripts\Activate.ps1
-python manage.py migrate
-python manage.py createsuperuser
-python manage.py runserver
+uv sync
+uv run python manage.py migrate
+uv run python manage.py createsuperuser
+uv run python manage.py runserver
 ```
 
 Start the Celery worker when background tasks are introduced:
 
 ```powershell
 Set-Location backend
-.\.venv\Scripts\Activate.ps1
-celery -A config worker --loglevel=INFO
+uv run celery -A config worker -l info
 ```
+
+Celery Beat, when introduced, runs with `uv run celery -A config beat -l info`. Native Windows workers may require a compatible execution pool or running Celery through WSL/containers; select and document that operational choice before relying on it.
 
 Start the frontend:
 
@@ -142,10 +145,12 @@ Once configured, the standard checks should be:
 ```powershell
 # Backend
 Set-Location backend
-.\.venv\Scripts\Activate.ps1
-pytest
-python manage.py check
-python manage.py makemigrations --check --dry-run
+uv sync
+uv run pytest
+uv run ruff check .
+uv run ruff format --check .
+uv run python manage.py check
+uv run python manage.py makemigrations --check --dry-run
 
 # Frontend
 Set-Location ..\frontend

@@ -1,0 +1,41 @@
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+dist/
+build/
+*.egg-info/
+
+# Django
+*.sqlite3
+media/
+staticfiles/
+
+# Node and frontend
+node_modules/
+frontend/dist/
+coverage/
+playwright-report/
+test-results/
+*.local
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Local design/test artifacts
+.impeccable/review/
