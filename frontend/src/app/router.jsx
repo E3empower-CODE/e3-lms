@@ -36,6 +36,8 @@ import {
   AssessmentResults,
   AttendanceClassPicker,
   ResultsProgress,
+  PaymentsList,
+  StudentPayments,
 } from './lazyRoutes'
 import { ROLES, ADMIN_ROLES } from '../lib/roles'
 
@@ -77,6 +79,7 @@ export const router = createBrowserRouter([
               { path: 'students/:id', element: lazyEl(<StudentDetail />) },
               { path: 'classes', ...placeholder('Classes', 'Phase 3') },
               { path: 'enrollments', ...placeholder('Enrollments', 'Phase 3') },
+              { path: 'payments', element: lazyEl(<PaymentsList />) },
             ],
           },
         ],
@@ -124,7 +127,7 @@ export const router = createBrowserRouter([
               { path: 'assessments', element: lazyEl(<AssessmentsList />) },
               { path: 'assessments/:id', element: lazyEl(<AssessmentAttempt />) },
               { path: 'results', element: lazyEl(<ResultsProgress />) },
-              { path: 'payments', ...placeholder('Payments', 'Phase 9') },
+              { path: 'payments', element: lazyEl(<StudentPayments />) },
               { path: 'certificates', ...placeholder('Certificates', 'Phase 10') },
             ],
           },

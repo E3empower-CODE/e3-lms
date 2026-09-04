@@ -53,3 +53,15 @@ export async function fetchMyAttendance() {
   const response = await apiClient.get(`${ME}/attendance/`)
   return rows(response)
 }
+
+/** Server-calculated balance summary for the current student. */
+export async function fetchMyBalance() {
+  const response = await apiClient.get(`${ME}/balance/`)
+  return response.data
+}
+
+/** Self-only payment history. */
+export async function fetchMyPayments() {
+  const response = await apiClient.get(`${ME}/payments/`)
+  return rows(response)
+}

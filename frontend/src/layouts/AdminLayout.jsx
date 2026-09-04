@@ -1,4 +1,11 @@
-import { LayoutDashboard, FileText, Users, CalendarDays, GraduationCap } from 'lucide-react'
+import {
+  LayoutDashboard,
+  FileText,
+  Users,
+  CalendarDays,
+  GraduationCap,
+  Wallet,
+} from 'lucide-react'
 import { DashboardShell } from './DashboardShell'
 
 const NAV = [
@@ -7,6 +14,7 @@ const NAV = [
   { label: 'Students', to: '/admin/students', icon: Users },
   { label: 'Classes', to: '/admin/classes', icon: CalendarDays },
   { label: 'Enrollments', to: '/admin/enrollments', icon: GraduationCap },
+  { label: 'Payments', to: '/admin/payments', icon: Wallet },
 ]
 
 export function AdminLayout() {

@@ -89,3 +89,11 @@ export const AttendanceClassPicker = lazy(() =>
 export const ResultsProgress = lazy(() =>
   import('../features/student/ResultsProgress').then((m) => ({ default: m.ResultsProgress })),
 )
+
+export const PaymentsList = lazy(() =>
+  import('../features/finance/PaymentsList').then((m) => ({ default: m.PaymentsList })),
+)
+
+export const StudentPayments = lazy(() =>
+  import('../features/student/StudentPayments').then((m) => ({ default: m.StudentPayments })),
+)
