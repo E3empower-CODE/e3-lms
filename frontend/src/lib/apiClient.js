@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { emitSessionExpired } from './sessionEvents'
 
 /**
  * Single axios instance for the E3 LMS API.
@@ -48,6 +49,12 @@ apiClient.interceptors.response.use(
   (error) => {
     const status = error.response?.status ?? null
     const envelope = error.response?.data?.error
+    // Signal session expiry so the auth layer can drop to unauthenticated.
+    // AuthProvider ignores this unless a session was actually established, so
+    // 401s during bootstrap or a failed login are harmless no-ops.
+    if (status === 401) {
+      emitSessionExpired()
+    }
     return Promise.reject(
       new ApiError({
         status,

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { NavLink, Outlet, useLocation } from 'react-router-dom'
-import { Menu, X, LogOut } from 'lucide-react'
+import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
+import { Menu, X, LogOut, KeyRound } from 'lucide-react'
 import { useAuth } from '../features/auth/AuthContext'
 import { roleLabel } from '../lib/roles'
 import styles from './DashboardShell.module.css'
@@ -69,6 +69,14 @@ export function DashboardShell({ title, navItems }) {
             <span className={styles.userRole}>{roleLabel(user.role)}</span>
           </span>
         )}
+        <Link
+          to="/account/password"
+          className={styles.iconLink}
+          aria-label="Change password"
+          title="Change password"
+        >
+          <KeyRound className={styles.navIcon} aria-hidden="true" />
+        </Link>
         <button type="button" className={styles.logout} onClick={logout}>
           <LogOut className={styles.navIcon} aria-hidden="true" />
           <span className={styles.logoutLabel}>Sign out</span>

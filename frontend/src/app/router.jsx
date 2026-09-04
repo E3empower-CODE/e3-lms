@@ -7,6 +7,9 @@ import { ProtectedRoute } from '../routes/ProtectedRoute'
 import { RoleRoute } from '../routes/RoleRoute'
 import { NotFound } from '../routes/NotFound'
 import { LoginPage } from '../features/auth/LoginPage'
+import { ForgotPasswordPage } from '../features/auth/ForgotPasswordPage'
+import { ResetPasswordPage } from '../features/auth/ResetPasswordPage'
+import { ChangePasswordPage } from '../features/auth/ChangePasswordPage'
 import { RoleDashboard } from '../features/dashboard/RoleDashboard'
 import { PlaceholderPage } from '../components/PlaceholderPage/PlaceholderPage'
 import { RootRedirect } from './RootRedirect'
@@ -20,11 +23,17 @@ export const router = createBrowserRouter([
   { path: '/', element: <RootRedirect /> },
   {
     element: <PublicLayout />,
-    children: [{ path: '/login', element: <LoginPage /> }],
+    children: [
+      { path: '/login', element: <LoginPage /> },
+      { path: '/forgot-password', element: <ForgotPasswordPage /> },
+      { path: '/reset-password', element: <ResetPasswordPage /> },
+    ],
   },
   {
     element: <ProtectedRoute />,
     children: [
+      // Available to any authenticated user, independent of role/shell.
+      { path: '/account/password', element: <ChangePasswordPage /> },
       {
         element: <RoleRoute allow={ADMIN_ROLES} />,
         children: [
