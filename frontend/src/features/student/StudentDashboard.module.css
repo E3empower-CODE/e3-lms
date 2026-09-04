@@ -1,0 +1,141 @@
+.title {
+  margin: 0 0 var(--space-4);
+  font-size: var(--text-2xl);
+  color: var(--color-text);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.continueCard {
+  padding: var(--space-4);
+  margin-bottom: var(--space-5);
+  background: var(--color-primary-soft);
+  border-color: var(--color-primary);
+}
+
+.continueBody {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.continueEyebrow {
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-primary-dark);
+  font-weight: 700;
+}
+
+.continueTitle {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--color-text);
+  margin-top: 2px;
+}
+
+.muted {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+.continueLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: var(--touch-target);
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.continueLink:hover {
+  background: var(--color-primary-dark);
+}
+
+.continueLink:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.linkIcon {
+  width: 16px;
+  height: 16px;
+}
+
+.sectionHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: var(--text-lg);
+  color: var(--color-text);
+}
+
+.viewAll {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-primary-dark);
+}
+
+.courseList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-3);
+}
+
+.courseCard {
+  display: block;
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  color: var(--color-text);
+}
+
+.courseCard:hover {
+  border-color: var(--color-primary);
+}
+
+.courseCard:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.courseName {
+  font-weight: 600;
+  margin-bottom: var(--space-2);
+}
+
+@media (min-width: 600px) {
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .courseList {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .stats {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

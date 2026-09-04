@@ -22,6 +22,10 @@ import {
   ApplicationDetail,
   StudentsList,
   StudentDetail,
+  StudentDashboard,
+  MyCourses,
+  CourseDetail,
+  LessonViewer,
 } from './lazyRoutes'
 import { ROLES, ADMIN_ROLES } from '../lib/roles'
 
@@ -89,8 +93,13 @@ export const router = createBrowserRouter([
             path: '/student',
             element: <StudentLayout />,
             children: [
-              { index: true, element: <RoleDashboard scope="student" /> },
-              { path: 'courses', ...placeholder('My Courses', 'Phase 5') },
+              { index: true, element: lazyEl(<StudentDashboard />) },
+              { path: 'courses', element: lazyEl(<MyCourses />) },
+              { path: 'courses/:id', element: lazyEl(<CourseDetail />) },
+              {
+                path: 'courses/:id/lessons/:lessonId',
+                element: lazyEl(<LessonViewer />),
+              },
               { path: 'results', ...placeholder('Results', 'Phase 7') },
               { path: 'payments', ...placeholder('Payments', 'Phase 9') },
               { path: 'certificates', ...placeholder('Certificates', 'Phase 10') },

@@ -29,3 +29,19 @@ export const StudentsList = lazy(() =>
 export const StudentDetail = lazy(() =>
   import('../features/students/StudentDetail').then((m) => ({ default: m.StudentDetail })),
 )
+
+export const StudentDashboard = lazy(() =>
+  import('../features/student/StudentDashboard').then((m) => ({ default: m.StudentDashboard })),
+)
+
+export const MyCourses = lazy(() =>
+  import('../features/student/MyCourses').then((m) => ({ default: m.MyCourses })),
+)
+
+export const CourseDetail = lazy(() =>
+  import('../features/student/CourseDetail').then((m) => ({ default: m.CourseDetail })),
+)
+
+export const LessonViewer = lazy(() =>
+  import('../features/student/LessonViewer').then((m) => ({ default: m.LessonViewer })),
+)
