@@ -1,0 +1,23 @@
+.wrap {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.eyebrow {
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-primary-dark);
+  font-weight: 600;
+}
+
+.heading {
+  margin: var(--space-1) 0 var(--space-2);
+  font-size: var(--text-xl);
+  color: var(--color-text);
+}
+
+.body {
+  color: var(--color-text-muted);
+  max-width: 60ch;
+}
