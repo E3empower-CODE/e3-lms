@@ -57,3 +57,19 @@ export const MyClasses = lazy(() =>
 export const ClassDetail = lazy(() =>
   import('../features/instructor/ClassDetail').then((m) => ({ default: m.ClassDetail })),
 )
+
+export const AssignmentsList = lazy(() =>
+  import('../features/coursework/AssignmentsList').then((m) => ({ default: m.AssignmentsList })),
+)
+
+export const AssignmentDetail = lazy(() =>
+  import('../features/coursework/AssignmentDetail').then((m) => ({ default: m.AssignmentDetail })),
+)
+
+export const AssessmentsList = lazy(() =>
+  import('../features/coursework/AssessmentsList').then((m) => ({ default: m.AssessmentsList })),
+)
+
+export const AssessmentAttempt = lazy(() =>
+  import('../features/coursework/AssessmentAttempt').then((m) => ({ default: m.AssessmentAttempt })),
+)

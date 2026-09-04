@@ -28,6 +28,10 @@ import {
   InstructorDashboard,
   MyClasses,
   ClassDetail,
+  AssignmentsList,
+  AssignmentDetail,
+  AssessmentsList,
+  AssessmentAttempt,
 } from './lazyRoutes'
 import { ROLES, ADMIN_ROLES } from '../lib/roles'
 
@@ -103,6 +107,10 @@ export const router = createBrowserRouter([
                 path: 'courses/:id/lessons/:lessonId',
                 element: lazyEl(<LessonViewer />),
               },
+              { path: 'assignments', element: lazyEl(<AssignmentsList />) },
+              { path: 'assignments/:id', element: lazyEl(<AssignmentDetail />) },
+              { path: 'assessments', element: lazyEl(<AssessmentsList />) },
+              { path: 'assessments/:id', element: lazyEl(<AssessmentAttempt />) },
               { path: 'results', ...placeholder('Results', 'Phase 7') },
               { path: 'payments', ...placeholder('Payments', 'Phase 9') },
               { path: 'certificates', ...placeholder('Certificates', 'Phase 10') },
