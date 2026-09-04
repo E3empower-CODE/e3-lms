@@ -89,3 +89,23 @@ export const AttendanceClassPicker = lazy(() =>
 export const ResultsProgress = lazy(() =>
   import('../features/student/ResultsProgress').then((m) => ({ default: m.ResultsProgress })),
 )
+
+export const PaymentsList = lazy(() =>
+  import('../features/finance/PaymentsList').then((m) => ({ default: m.PaymentsList })),
+)
+
+export const StudentPayments = lazy(() =>
+  import('../features/student/StudentPayments').then((m) => ({ default: m.StudentPayments })),
+)
+
+export const CertificatesAdmin = lazy(() =>
+  import('../features/certificates/CertificatesAdmin').then((m) => ({ default: m.CertificatesAdmin })),
+)
+
+export const ReportsPage = lazy(() =>
+  import('../features/reports/ReportsPage').then((m) => ({ default: m.ReportsPage })),
+)
+
+export const StudentCertificates = lazy(() =>
+  import('../features/student/StudentCertificates').then((m) => ({ default: m.StudentCertificates })),
+)
