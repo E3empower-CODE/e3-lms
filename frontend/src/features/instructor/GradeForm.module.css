@@ -1,0 +1,20 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.scoreRow {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.scoreInput {
+  max-width: 200px;
+  flex: 1;
+}
+
+.saveButton {
+  margin-top: 22px; /* align with input, below its label */
+}

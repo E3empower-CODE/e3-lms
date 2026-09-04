@@ -11,7 +11,6 @@ import { LoginPage } from '../features/auth/LoginPage'
 import { ForgotPasswordPage } from '../features/auth/ForgotPasswordPage'
 import { ResetPasswordPage } from '../features/auth/ResetPasswordPage'
 import { ChangePasswordPage } from '../features/auth/ChangePasswordPage'
-import { RoleDashboard } from '../features/dashboard/RoleDashboard'
 import { PlaceholderPage } from '../components/PlaceholderPage/PlaceholderPage'
 import { Spinner } from '../components/Spinner/Spinner'
 import { RootRedirect } from './RootRedirect'
@@ -26,6 +25,17 @@ import {
   MyCourses,
   CourseDetail,
   LessonViewer,
+  InstructorDashboard,
+  MyClasses,
+  ClassDetail,
+  AssignmentsList,
+  AssignmentDetail,
+  AssessmentsList,
+  AssessmentAttempt,
+  AssignmentGrading,
+  AssessmentResults,
+  AttendanceClassPicker,
+  ResultsProgress,
 } from './lazyRoutes'
 import { ROLES, ADMIN_ROLES } from '../lib/roles'
 
@@ -78,9 +88,18 @@ export const router = createBrowserRouter([
             path: '/instructor',
             element: <InstructorLayout />,
             children: [
-              { index: true, element: <RoleDashboard scope="instructor" /> },
-              { path: 'classes', ...placeholder('My Classes', 'Phase 6') },
-              { path: 'attendance', ...placeholder('Attendance', 'Phase 8') },
+              { index: true, element: lazyEl(<InstructorDashboard />) },
+              { path: 'classes', element: lazyEl(<MyClasses />) },
+              { path: 'classes/:id', element: lazyEl(<ClassDetail />) },
+              {
+                path: 'assignments/:id/grade',
+                element: lazyEl(<AssignmentGrading />),
+              },
+              {
+                path: 'assessments/:id/results',
+                element: lazyEl(<AssessmentResults />),
+              },
+              { path: 'attendance', element: lazyEl(<AttendanceClassPicker />) },
               { path: 'coursework', ...placeholder('Coursework', 'Phase 7') },
             ],
           },
@@ -100,7 +119,11 @@ export const router = createBrowserRouter([
                 path: 'courses/:id/lessons/:lessonId',
                 element: lazyEl(<LessonViewer />),
               },
-              { path: 'results', ...placeholder('Results', 'Phase 7') },
+              { path: 'assignments', element: lazyEl(<AssignmentsList />) },
+              { path: 'assignments/:id', element: lazyEl(<AssignmentDetail />) },
+              { path: 'assessments', element: lazyEl(<AssessmentsList />) },
+              { path: 'assessments/:id', element: lazyEl(<AssessmentAttempt />) },
+              { path: 'results', element: lazyEl(<ResultsProgress />) },
               { path: 'payments', ...placeholder('Payments', 'Phase 9') },
               { path: 'certificates', ...placeholder('Certificates', 'Phase 10') },
             ],
