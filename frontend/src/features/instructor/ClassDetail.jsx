@@ -8,6 +8,7 @@ import { EmptyState } from '../../components/EmptyState/EmptyState'
 import { PlaceholderPage } from '../../components/PlaceholderPage/PlaceholderPage'
 import { useAsync } from '../../hooks/useAsync'
 import { fetchMyClass } from './teachingApi'
+import { ClassCoursework } from './ClassCoursework'
 import styles from './ClassDetail.module.css'
 
 function studentName(s) {
@@ -110,13 +111,7 @@ export function ClassDetail() {
                 {
                   key: 'coursework',
                   label: 'Coursework',
-                  content: (
-                    <PlaceholderPage
-                      title="Coursework"
-                      phase="Phase 7"
-                      description="Assignments and assessments arrive with the coursework phase."
-                    />
-                  ),
+                  content: <ClassCoursework classId={id} />,
                 },
               ]}
             />

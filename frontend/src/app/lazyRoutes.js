@@ -73,3 +73,11 @@ export const AssessmentsList = lazy(() =>
 export const AssessmentAttempt = lazy(() =>
   import('../features/coursework/AssessmentAttempt').then((m) => ({ default: m.AssessmentAttempt })),
 )
+
+export const AssignmentGrading = lazy(() =>
+  import('../features/instructor/AssignmentGrading').then((m) => ({ default: m.AssignmentGrading })),
+)
+
+export const AssessmentResults = lazy(() =>
+  import('../features/instructor/AssessmentResults').then((m) => ({ default: m.AssessmentResults })),
+)
