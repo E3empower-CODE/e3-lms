@@ -97,3 +97,15 @@ export const PaymentsList = lazy(() =>
 export const StudentPayments = lazy(() =>
   import('../features/student/StudentPayments').then((m) => ({ default: m.StudentPayments })),
 )
+
+export const CertificatesAdmin = lazy(() =>
+  import('../features/certificates/CertificatesAdmin').then((m) => ({ default: m.CertificatesAdmin })),
+)
+
+export const ReportsPage = lazy(() =>
+  import('../features/reports/ReportsPage').then((m) => ({ default: m.ReportsPage })),
+)
+
+export const StudentCertificates = lazy(() =>
+  import('../features/student/StudentCertificates').then((m) => ({ default: m.StudentCertificates })),
+)

@@ -5,6 +5,8 @@ import {
   CalendarDays,
   GraduationCap,
   Wallet,
+  Award,
+  BarChart3,
 } from 'lucide-react'
 import { DashboardShell } from './DashboardShell'
 
@@ -15,6 +17,8 @@ const NAV = [
   { label: 'Classes', to: '/admin/classes', icon: CalendarDays },
   { label: 'Enrollments', to: '/admin/enrollments', icon: GraduationCap },
   { label: 'Payments', to: '/admin/payments', icon: Wallet },
+  { label: 'Certificates', to: '/admin/certificates', icon: Award },
+  { label: 'Reports', to: '/admin/reports', icon: BarChart3 },
 ]
 
 export function AdminLayout() {

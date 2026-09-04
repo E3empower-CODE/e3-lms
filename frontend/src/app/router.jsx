@@ -38,6 +38,9 @@ import {
   ResultsProgress,
   PaymentsList,
   StudentPayments,
+  CertificatesAdmin,
+  ReportsPage,
+  StudentCertificates,
 } from './lazyRoutes'
 import { ROLES, ADMIN_ROLES } from '../lib/roles'
 
@@ -80,6 +83,8 @@ export const router = createBrowserRouter([
               { path: 'classes', ...placeholder('Classes', 'Phase 3') },
               { path: 'enrollments', ...placeholder('Enrollments', 'Phase 3') },
               { path: 'payments', element: lazyEl(<PaymentsList />) },
+              { path: 'certificates', element: lazyEl(<CertificatesAdmin />) },
+              { path: 'reports', element: lazyEl(<ReportsPage />) },
             ],
           },
         ],
@@ -128,7 +133,7 @@ export const router = createBrowserRouter([
               { path: 'assessments/:id', element: lazyEl(<AssessmentAttempt />) },
               { path: 'results', element: lazyEl(<ResultsProgress />) },
               { path: 'payments', element: lazyEl(<StudentPayments />) },
-              { path: 'certificates', ...placeholder('Certificates', 'Phase 10') },
+              { path: 'certificates', element: lazyEl(<StudentCertificates />) },
             ],
           },
         ],
