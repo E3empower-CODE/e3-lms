@@ -63,6 +63,25 @@
   box-shadow: var(--focus-ring);
 }
 
+.iconLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--touch-target);
+  height: var(--touch-target);
+  color: var(--color-text);
+  border-radius: var(--radius-md);
+}
+
+.iconLink:hover {
+  background: var(--color-primary-soft);
+}
+
+.iconLink:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
 .logout {
   display: inline-flex;
   align-items: center;

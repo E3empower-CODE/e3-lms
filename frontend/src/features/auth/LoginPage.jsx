@@ -1,15 +1,16 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { z } from 'zod'
 import { Input } from '../../components/Input/Input'
 import { Button } from '../../components/Button/Button'
 import { Alert } from '../../components/Alert/Alert'
 import { Card } from '../../components/Card/Card'
 import { useAuth } from './AuthContext'
+import { applyServerFieldErrors } from './formErrors'
 import { homePathForRole } from '../../lib/roles'
-import styles from './LoginPage.module.css'
+import styles from './authForms.module.css'
 
 // snake_case field names to match the API payload.
 const schema = z.object({
@@ -18,7 +19,7 @@ const schema = z.object({
 })
 
 export function LoginPage() {
-  const { login } = useAuth()
+  const { login, sessionExpired } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
   const [formError, setFormError] = useState(null)
@@ -37,15 +38,7 @@ export function LoginPage() {
       const dest = location.state?.from ?? homePathForRole(user.role)
       navigate(dest, { replace: true })
     } catch (err) {
-      // Map server field errors from the { error: { details } } envelope.
-      const details = err.details
-      if (details && typeof details === 'object') {
-        for (const [field, messages] of Object.entries(details)) {
-          if (field === 'email' || field === 'password') {
-            setError(field, { message: [].concat(messages).join(' ') })
-          }
-        }
-      }
+      applyServerFieldErrors(err, setError, ['email', 'password'])
       setFormError(err.message)
     }
   }
@@ -54,6 +47,11 @@ export function LoginPage() {
     <div className={styles.wrap}>
       <Card title="Sign in" className={styles.card}>
         <p className={styles.subtitle}>Access your E3 Empower LMS account.</p>
+        {sessionExpired && !formError && (
+          <Alert variant="info" className={styles.alert}>
+            Your session expired. Please sign in again.
+          </Alert>
+        )}
         {formError && (
           <Alert variant="error" className={styles.alert}>
             {formError}
@@ -78,6 +76,14 @@ export function LoginPage() {
             Sign in
           </Button>
         </form>
+        <div className={styles.links}>
+          <Link className={styles.link} to="/forgot-password">
+            Forgot password?
+          </Link>
+          <Link className={styles.link} to="/register">
+            Create an account
+          </Link>
+        </div>
       </Card>
     </div>
   )

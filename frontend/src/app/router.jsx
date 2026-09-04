@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { createBrowserRouter } from 'react-router-dom'
 import { PublicLayout } from '../layouts/PublicLayout'
 import { AdminLayout } from '../layouts/AdminLayout'
@@ -7,10 +8,30 @@ import { ProtectedRoute } from '../routes/ProtectedRoute'
 import { RoleRoute } from '../routes/RoleRoute'
 import { NotFound } from '../routes/NotFound'
 import { LoginPage } from '../features/auth/LoginPage'
+import { ForgotPasswordPage } from '../features/auth/ForgotPasswordPage'
+import { ResetPasswordPage } from '../features/auth/ResetPasswordPage'
+import { ChangePasswordPage } from '../features/auth/ChangePasswordPage'
 import { RoleDashboard } from '../features/dashboard/RoleDashboard'
 import { PlaceholderPage } from '../components/PlaceholderPage/PlaceholderPage'
+import { Spinner } from '../components/Spinner/Spinner'
 import { RootRedirect } from './RootRedirect'
+import {
+  RegisterWizard,
+  AdmissionsDashboard,
+  ApplicationsList,
+  ApplicationDetail,
+  StudentsList,
+  StudentDetail,
+  StudentDashboard,
+  MyCourses,
+  CourseDetail,
+  LessonViewer,
+} from './lazyRoutes'
 import { ROLES, ADMIN_ROLES } from '../lib/roles'
+
+const lazyEl = (node) => (
+  <Suspense fallback={<Spinner label="Loading…" />}>{node}</Suspense>
+)
 
 const placeholder = (title, phase) => ({
   element: <PlaceholderPage title={title} phase={phase} />,
@@ -20,11 +41,18 @@ export const router = createBrowserRouter([
   { path: '/', element: <RootRedirect /> },
   {
     element: <PublicLayout />,
-    children: [{ path: '/login', element: <LoginPage /> }],
+    children: [
+      { path: '/login', element: <LoginPage /> },
+      { path: '/register', element: lazyEl(<RegisterWizard />) },
+      { path: '/forgot-password', element: <ForgotPasswordPage /> },
+      { path: '/reset-password', element: <ResetPasswordPage /> },
+    ],
   },
   {
     element: <ProtectedRoute />,
     children: [
+      // Available to any authenticated user, independent of role/shell.
+      { path: '/account/password', element: <ChangePasswordPage /> },
       {
         element: <RoleRoute allow={ADMIN_ROLES} />,
         children: [
@@ -32,9 +60,11 @@ export const router = createBrowserRouter([
             path: '/admin',
             element: <AdminLayout />,
             children: [
-              { index: true, element: <RoleDashboard scope="admissions" /> },
-              { path: 'applications', ...placeholder('Applications', 'Phase 3') },
-              { path: 'students', ...placeholder('Students', 'Phase 5') },
+              { index: true, element: lazyEl(<AdmissionsDashboard />) },
+              { path: 'applications', element: lazyEl(<ApplicationsList />) },
+              { path: 'applications/:id', element: lazyEl(<ApplicationDetail />) },
+              { path: 'students', element: lazyEl(<StudentsList />) },
+              { path: 'students/:id', element: lazyEl(<StudentDetail />) },
               { path: 'classes', ...placeholder('Classes', 'Phase 3') },
               { path: 'enrollments', ...placeholder('Enrollments', 'Phase 3') },
             ],
@@ -63,8 +93,13 @@ export const router = createBrowserRouter([
             path: '/student',
             element: <StudentLayout />,
             children: [
-              { index: true, element: <RoleDashboard scope="student" /> },
-              { path: 'courses', ...placeholder('My Courses', 'Phase 5') },
+              { index: true, element: lazyEl(<StudentDashboard />) },
+              { path: 'courses', element: lazyEl(<MyCourses />) },
+              { path: 'courses/:id', element: lazyEl(<CourseDetail />) },
+              {
+                path: 'courses/:id/lessons/:lessonId',
+                element: lazyEl(<LessonViewer />),
+              },
               { path: 'results', ...placeholder('Results', 'Phase 7') },
               { path: 'payments', ...placeholder('Payments', 'Phase 9') },
               { path: 'certificates', ...placeholder('Certificates', 'Phase 10') },

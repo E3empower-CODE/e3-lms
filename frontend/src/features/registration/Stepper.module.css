@@ -1,0 +1,78 @@
+.wrap {
+  margin-bottom: var(--space-5);
+}
+
+.compact {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.compactLabel {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.list {
+  display: none;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.marker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.check {
+  width: 15px;
+  height: 15px;
+}
+
+.done .marker {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.done {
+  color: var(--color-text);
+}
+
+.current .marker {
+  border-color: var(--color-primary);
+  color: var(--color-primary-dark);
+  box-shadow: 0 0 0 2px var(--color-primary-soft);
+}
+
+.current {
+  color: var(--color-primary-dark);
+  font-weight: 600;
+}
+
+@media (min-width: 768px) {
+  .compact {
+    display: none;
+  }
+  .list {
+    display: flex;
+  }
+}

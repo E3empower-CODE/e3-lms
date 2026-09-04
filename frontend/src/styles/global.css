@@ -54,6 +54,23 @@ textarea {
   outline: none;
 }
 
+/* Print helpers: hide interactive chrome, reveal print-only summaries. */
+.print-only {
+  display: none;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+  body {
+    background: #fff;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
