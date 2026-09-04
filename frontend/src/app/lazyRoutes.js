@@ -81,3 +81,11 @@ export const AssignmentGrading = lazy(() =>
 export const AssessmentResults = lazy(() =>
   import('../features/instructor/AssessmentResults').then((m) => ({ default: m.AssessmentResults })),
 )
+
+export const AttendanceClassPicker = lazy(() =>
+  import('../features/instructor/AttendanceClassPicker').then((m) => ({ default: m.AttendanceClassPicker })),
+)
+
+export const ResultsProgress = lazy(() =>
+  import('../features/student/ResultsProgress').then((m) => ({ default: m.ResultsProgress })),
+)

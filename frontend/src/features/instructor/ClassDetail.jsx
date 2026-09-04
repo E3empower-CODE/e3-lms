@@ -9,6 +9,7 @@ import { PlaceholderPage } from '../../components/PlaceholderPage/PlaceholderPag
 import { useAsync } from '../../hooks/useAsync'
 import { fetchMyClass } from './teachingApi'
 import { ClassCoursework } from './ClassCoursework'
+import { AttendanceTab } from './AttendanceTab'
 import styles from './ClassDetail.module.css'
 
 function studentName(s) {
@@ -100,13 +101,7 @@ export function ClassDetail() {
                 {
                   key: 'attendance',
                   label: 'Attendance',
-                  content: (
-                    <PlaceholderPage
-                      title="Attendance"
-                      phase="Phase 8"
-                      description="Recording class attendance arrives with the attendance phase."
-                    />
-                  ),
+                  content: <AttendanceTab classId={id} />,
                 },
                 {
                   key: 'coursework',

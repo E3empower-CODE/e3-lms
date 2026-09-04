@@ -38,3 +38,18 @@ export async function completeMyLesson(lessonId) {
   const response = await apiClient.post(`${ME}/lessons/${lessonId}/complete/`)
   return response.data
 }
+
+/**
+ * Explainable progress summary computed server-side (overall + components).
+ * The client only displays it and never writes progress.
+ */
+export async function fetchMyProgress() {
+  const response = await apiClient.get(`${ME}/progress/`)
+  return response.data
+}
+
+/** Self-only attendance history. */
+export async function fetchMyAttendance() {
+  const response = await apiClient.get(`${ME}/attendance/`)
+  return rows(response)
+}
