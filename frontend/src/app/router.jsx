@@ -11,7 +11,6 @@ import { LoginPage } from '../features/auth/LoginPage'
 import { ForgotPasswordPage } from '../features/auth/ForgotPasswordPage'
 import { ResetPasswordPage } from '../features/auth/ResetPasswordPage'
 import { ChangePasswordPage } from '../features/auth/ChangePasswordPage'
-import { RoleDashboard } from '../features/dashboard/RoleDashboard'
 import { PlaceholderPage } from '../components/PlaceholderPage/PlaceholderPage'
 import { Spinner } from '../components/Spinner/Spinner'
 import { RootRedirect } from './RootRedirect'
@@ -26,6 +25,9 @@ import {
   MyCourses,
   CourseDetail,
   LessonViewer,
+  InstructorDashboard,
+  MyClasses,
+  ClassDetail,
 } from './lazyRoutes'
 import { ROLES, ADMIN_ROLES } from '../lib/roles'
 
@@ -78,8 +80,9 @@ export const router = createBrowserRouter([
             path: '/instructor',
             element: <InstructorLayout />,
             children: [
-              { index: true, element: <RoleDashboard scope="instructor" /> },
-              { path: 'classes', ...placeholder('My Classes', 'Phase 6') },
+              { index: true, element: lazyEl(<InstructorDashboard />) },
+              { path: 'classes', element: lazyEl(<MyClasses />) },
+              { path: 'classes/:id', element: lazyEl(<ClassDetail />) },
               { path: 'attendance', ...placeholder('Attendance', 'Phase 8') },
               { path: 'coursework', ...placeholder('Coursework', 'Phase 7') },
             ],

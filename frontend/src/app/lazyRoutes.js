@@ -45,3 +45,15 @@ export const CourseDetail = lazy(() =>
 export const LessonViewer = lazy(() =>
   import('../features/student/LessonViewer').then((m) => ({ default: m.LessonViewer })),
 )
+
+export const InstructorDashboard = lazy(() =>
+  import('../features/instructor/InstructorDashboard').then((m) => ({ default: m.InstructorDashboard })),
+)
+
+export const MyClasses = lazy(() =>
+  import('../features/instructor/MyClasses').then((m) => ({ default: m.MyClasses })),
+)
+
+export const ClassDetail = lazy(() =>
+  import('../features/instructor/ClassDetail').then((m) => ({ default: m.ClassDetail })),
+)
