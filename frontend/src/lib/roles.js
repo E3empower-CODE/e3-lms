@@ -15,6 +15,14 @@ export const ROLES = {
 /** Roles that use the admin shell. */
 export const ADMIN_ROLES = [ROLES.SUPER_ADMIN, ROLES.ADMISSIONS, ROLES.FINANCE]
 
+/** Roles permitted to convert an approved application into a student.
+ * The server enforces this too; the UI only hides the action otherwise. */
+export const STUDENT_CONVERT_ROLES = [ROLES.SUPER_ADMIN, ROLES.ADMISSIONS]
+
+export function canConvertApplications(role) {
+  return STUDENT_CONVERT_ROLES.includes(role)
+}
+
 /** Landing route for a role after login / on visiting `/`. */
 export function homePathForRole(role) {
   if (ADMIN_ROLES.includes(role)) return '/admin'

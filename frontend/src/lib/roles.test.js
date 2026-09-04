@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { ROLES, homePathForRole, roleLabel } from './roles'
+import { ROLES, homePathForRole, roleLabel, canConvertApplications } from './roles'
 
 describe('homePathForRole', () => {
   it('routes admin roles to /admin', () => {
@@ -23,5 +23,15 @@ describe('roleLabel', () => {
   it('gives a human label, with a safe default', () => {
     expect(roleLabel(ROLES.FINANCE)).toBe('Finance Officer')
     expect(roleLabel('mystery')).toBe('User')
+  })
+})
+
+describe('canConvertApplications', () => {
+  it('allows super admin and admissions only', () => {
+    expect(canConvertApplications(ROLES.SUPER_ADMIN)).toBe(true)
+    expect(canConvertApplications(ROLES.ADMISSIONS)).toBe(true)
+    expect(canConvertApplications(ROLES.FINANCE)).toBe(false)
+    expect(canConvertApplications(ROLES.INSTRUCTOR)).toBe(false)
+    expect(canConvertApplications(undefined)).toBe(false)
   })
 })

@@ -21,3 +21,11 @@ export const ApplicationsList = lazy(() =>
 export const ApplicationDetail = lazy(() =>
   import('../features/admissions/ApplicationDetail').then((m) => ({ default: m.ApplicationDetail })),
 )
+
+export const StudentsList = lazy(() =>
+  import('../features/students/StudentsList').then((m) => ({ default: m.StudentsList })),
+)
+
+export const StudentDetail = lazy(() =>
+  import('../features/students/StudentDetail').then((m) => ({ default: m.StudentDetail })),
+)

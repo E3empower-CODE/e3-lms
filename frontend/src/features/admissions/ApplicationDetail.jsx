@@ -1,15 +1,18 @@
 import { useCallback, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { ArrowLeft, Printer } from 'lucide-react'
+import { ArrowLeft, Printer, UserPlus } from 'lucide-react'
 import { Badge } from '../../components/Badge/Badge'
 import { Button } from '../../components/Button/Button'
 import { Tabs } from '../../components/Tabs/Tabs'
 import { DataState } from '../../components/DataState/DataState'
 import { useAsync } from '../../hooks/useAsync'
+import { useAuth } from '../auth/AuthContext'
+import { canConvertApplications } from '../../lib/roles'
 import { fetchApplication } from './admissionsApi'
-import { STATUS_LABELS, STATUS_VARIANTS, transitionsFor } from './status'
+import { STATUS, STATUS_LABELS, STATUS_VARIANTS, transitionsFor } from './status'
 import { TransitionDialog } from './TransitionDialog'
 import { NotesPanel } from './NotesPanel'
+import { ConvertStudentDialog } from '../students/ConvertStudentDialog'
 import { formatDate, formatDateTime, formatMoney } from '../../lib/format'
 import styles from './ApplicationDetail.module.css'
 
@@ -33,15 +36,21 @@ function applicantName(app) {
 
 export function ApplicationDetail() {
   const { id } = useParams()
+  const { user } = useAuth()
   const load = useCallback(() => fetchApplication(id), [id])
   const { status, data, error, retry, setData } = useAsync(load, [id])
   const [pending, setPending] = useState(null) // active transition
+  const [convertOpen, setConvertOpen] = useState(false)
 
   const app = data
   const courses = app?.courses ?? []
   const notes = app?.notes ?? []
   const activity = app?.activity ?? []
   const transitions = app ? transitionsFor(app.status) : []
+  const canConvert =
+    app?.status === STATUS.APPROVED &&
+    !app?.student_id &&
+    canConvertApplications(user?.role)
 
   const overview = app && (
     <div className={styles.sections}>
@@ -133,6 +142,22 @@ export function ApplicationDetail() {
               </Button>
             </div>
 
+            {(canConvert || app.student_id) && (
+              <div className={`${styles.actions} no-print`}>
+                {app.student_id ? (
+                  <Link className={styles.studentLink} to={`/admin/students/${app.student_id}`}>
+                    <UserPlus className={styles.backIcon} aria-hidden="true" />
+                    View linked student
+                  </Link>
+                ) : (
+                  <Button onClick={() => setConvertOpen(true)}>
+                    <UserPlus className={styles.backIcon} aria-hidden="true" />
+                    Create student
+                  </Button>
+                )}
+              </div>
+            )}
+
             {transitions.length > 0 && (
               <div className={`${styles.actions} no-print`}>
                 {transitions.map((t) => (
@@ -192,6 +217,19 @@ export function ApplicationDetail() {
                 setData((prev) => ({ ...prev, ...updated }))
                 setPending(null)
               }}
+            />
+
+            <ConvertStudentDialog
+              open={convertOpen}
+              applicationId={app.id}
+              onClose={() => setConvertOpen(false)}
+              onConverted={(student) =>
+                setData((prev) => ({
+                  ...prev,
+                  student_id: student?.id ?? prev.student_id,
+                  student_number: student?.student_number ?? prev.student_number,
+                }))
+              }
             />
           </>
         )}

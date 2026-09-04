@@ -20,6 +20,8 @@ import {
   AdmissionsDashboard,
   ApplicationsList,
   ApplicationDetail,
+  StudentsList,
+  StudentDetail,
 } from './lazyRoutes'
 import { ROLES, ADMIN_ROLES } from '../lib/roles'
 
@@ -57,7 +59,8 @@ export const router = createBrowserRouter([
               { index: true, element: lazyEl(<AdmissionsDashboard />) },
               { path: 'applications', element: lazyEl(<ApplicationsList />) },
               { path: 'applications/:id', element: lazyEl(<ApplicationDetail />) },
-              { path: 'students', ...placeholder('Students', 'Phase 5') },
+              { path: 'students', element: lazyEl(<StudentsList />) },
+              { path: 'students/:id', element: lazyEl(<StudentDetail />) },
               { path: 'classes', ...placeholder('Classes', 'Phase 3') },
               { path: 'enrollments', ...placeholder('Enrollments', 'Phase 3') },
             ],
