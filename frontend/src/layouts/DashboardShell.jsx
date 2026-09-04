@@ -50,7 +50,7 @@ export function DashboardShell({ title, navItems }) {
 
   return (
     <div className={styles.shell}>
-      <header className={styles.header}>
+      <header className={`${styles.header} no-print`}>
         <button
           type="button"
           className={styles.menuButton}
@@ -84,7 +84,7 @@ export function DashboardShell({ title, navItems }) {
       </header>
 
       <div className={styles.body}>
-        <aside className={styles.sidebar} aria-label="Sidebar">
+        <aside className={`${styles.sidebar} no-print`} aria-label="Sidebar">
           {nav}
         </aside>
 

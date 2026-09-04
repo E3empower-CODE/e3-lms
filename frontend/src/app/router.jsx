@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { createBrowserRouter } from 'react-router-dom'
 import { PublicLayout } from '../layouts/PublicLayout'
 import { AdminLayout } from '../layouts/AdminLayout'
@@ -10,11 +11,21 @@ import { LoginPage } from '../features/auth/LoginPage'
 import { ForgotPasswordPage } from '../features/auth/ForgotPasswordPage'
 import { ResetPasswordPage } from '../features/auth/ResetPasswordPage'
 import { ChangePasswordPage } from '../features/auth/ChangePasswordPage'
-import { RegisterWizard } from '../features/registration/RegisterWizard'
 import { RoleDashboard } from '../features/dashboard/RoleDashboard'
 import { PlaceholderPage } from '../components/PlaceholderPage/PlaceholderPage'
+import { Spinner } from '../components/Spinner/Spinner'
 import { RootRedirect } from './RootRedirect'
+import {
+  RegisterWizard,
+  AdmissionsDashboard,
+  ApplicationsList,
+  ApplicationDetail,
+} from './lazyRoutes'
 import { ROLES, ADMIN_ROLES } from '../lib/roles'
+
+const lazyEl = (node) => (
+  <Suspense fallback={<Spinner label="Loading…" />}>{node}</Suspense>
+)
 
 const placeholder = (title, phase) => ({
   element: <PlaceholderPage title={title} phase={phase} />,
@@ -26,7 +37,7 @@ export const router = createBrowserRouter([
     element: <PublicLayout />,
     children: [
       { path: '/login', element: <LoginPage /> },
-      { path: '/register', element: <RegisterWizard /> },
+      { path: '/register', element: lazyEl(<RegisterWizard />) },
       { path: '/forgot-password', element: <ForgotPasswordPage /> },
       { path: '/reset-password', element: <ResetPasswordPage /> },
     ],
@@ -43,8 +54,9 @@ export const router = createBrowserRouter([
             path: '/admin',
             element: <AdminLayout />,
             children: [
-              { index: true, element: <RoleDashboard scope="admissions" /> },
-              { path: 'applications', ...placeholder('Applications', 'Phase 3') },
+              { index: true, element: lazyEl(<AdmissionsDashboard />) },
+              { path: 'applications', element: lazyEl(<ApplicationsList />) },
+              { path: 'applications/:id', element: lazyEl(<ApplicationDetail />) },
               { path: 'students', ...placeholder('Students', 'Phase 5') },
               { path: 'classes', ...placeholder('Classes', 'Phase 3') },
               { path: 'enrollments', ...placeholder('Enrollments', 'Phase 3') },
