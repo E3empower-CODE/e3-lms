@@ -10,6 +10,7 @@ import { LoginPage } from '../features/auth/LoginPage'
 import { ForgotPasswordPage } from '../features/auth/ForgotPasswordPage'
 import { ResetPasswordPage } from '../features/auth/ResetPasswordPage'
 import { ChangePasswordPage } from '../features/auth/ChangePasswordPage'
+import { RegisterWizard } from '../features/registration/RegisterWizard'
 import { RoleDashboard } from '../features/dashboard/RoleDashboard'
 import { PlaceholderPage } from '../components/PlaceholderPage/PlaceholderPage'
 import { RootRedirect } from './RootRedirect'
@@ -25,6 +26,7 @@ export const router = createBrowserRouter([
     element: <PublicLayout />,
     children: [
       { path: '/login', element: <LoginPage /> },
+      { path: '/register', element: <RegisterWizard /> },
       { path: '/forgot-password', element: <ForgotPasswordPage /> },
       { path: '/reset-password', element: <ResetPasswordPage /> },
     ],

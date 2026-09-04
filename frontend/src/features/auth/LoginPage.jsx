@@ -80,6 +80,9 @@ export function LoginPage() {
           <Link className={styles.link} to="/forgot-password">
             Forgot password?
           </Link>
+          <Link className={styles.link} to="/register">
+            Create an account
+          </Link>
         </div>
       </Card>
     </div>
