@@ -28,3 +28,13 @@ python_files = ["test_*.py", "tests.py"]
 [tool.ruff]
 target-version = "py312"
 line-length = 88
+
+[tool.ruff.lint]
+# RUF012 (mutable class-attribute defaults) fires on idiomatic Django/DRF
+# attributes like `fields`, `permission_classes`, and migration `operations`;
+# those are the framework's own convention, so it is disabled project-wide.
+ignore = ["RUF012"]
+
+[tool.ruff.lint.per-file-ignores]
+# Migrations are generated; don't lint their style.
+"*/migrations/*" = ["E501", "I001"]
