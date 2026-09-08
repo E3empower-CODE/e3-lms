@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     "drf_spectacular",
     # Local
     "accounts",
+    "admissions",
 ]
 
 MIDDLEWARE = [
@@ -197,6 +198,11 @@ INSTITUTION_TIME_ZONE = env("INSTITUTION_TIME_ZONE", "Africa/Lagos")
 # --- Static files ---
 
 STATIC_URL = "static/"
+
+# Uploaded media (passport photos, documents). Access controls and content
+# validation are enforced at the API boundary in later phases.
+MEDIA_URL = "media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
