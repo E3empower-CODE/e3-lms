@@ -8,6 +8,8 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 api_v1 = [
     path("health/", HealthView.as_view(), name="health"),
     path("", include("accounts.urls")),
+    path("", include("catalog.urls")),
+    path("", include("admissions.urls")),
     path("schema/", SpectacularAPIView.as_view(), name="schema"),
     path("docs/", SpectacularSwaggerView.as_view(url_name="v1:schema"), name="docs"),
 ]

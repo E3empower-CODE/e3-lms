@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     "drf_spectacular",
     # Local
     "accounts",
+    "catalog",
     "admissions",
 ]
 
@@ -154,6 +155,10 @@ REST_FRAMEWORK = {
     ],
     "EXCEPTION_HANDLER": "common.exceptions.envelope_exception_handler",
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_THROTTLE_RATES": {
+        # Public registration submissions (scoped throttle on the view).
+        "registration": env("REGISTRATION_THROTTLE_RATE", "30/hour"),
+    },
 }
 
 SPECTACULAR_SETTINGS = {

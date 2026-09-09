@@ -56,6 +56,26 @@ class ApplicationStatus(models.TextChoices):
     CANCELLED = "cancelled", "Cancelled"
 
 
+class NumberSequence(models.Model):
+    """A per-scope, per-year counter for concurrency-safe display identifiers
+    (e.g. application numbers). Incremented under a row lock — never
+    read-the-last-row-and-add-one (DATABASE.md — Identifier Generation)."""
+
+    scope = models.CharField(max_length=32)
+    year = models.PositiveIntegerField()
+    value = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["scope", "year"], name="uniq_sequence_scope_year"
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.scope}/{self.year}={self.value}"
+
+
 class Applicant(TimeStampedModel):
     """Identity + contact captured at registration. Applicants have no account."""
 
