@@ -1,9 +1,22 @@
 import pytest
 from accounts.models import Role
 from django.contrib.auth import get_user_model
+from django.contrib.auth.tokens import default_token_generator
+from django.core import mail
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
 from rest_framework.test import APIClient
 
 User = get_user_model()
+
+STRONG_PASSWORD = "Zx9-vector-lime"
+
+
+def reset_link_parts(user):
+    return (
+        urlsafe_base64_encode(force_bytes(user.pk)),
+        default_token_generator.make_token(user),
+    )
 
 
 @pytest.fixture
@@ -78,3 +91,122 @@ def test_login_rejects_bad_credentials(client, student):
 def test_logout_requires_authentication(client):
     resp = client.post("/api/v1/auth/logout/")
     assert resp.status_code == 401
+
+
+# --- Password change ---
+
+
+def login_student(client):
+    resp = client.post(
+        "/api/v1/auth/login/",
+        {"email": "ada@example.com", "password": "s3cret-pass"},
+        format="json",
+    )
+    assert resp.status_code == 200
+
+
+def test_password_change_flow(client, student):
+    login_student(client)
+    resp = client.post(
+        "/api/v1/auth/password/change/",
+        {"current_password": "s3cret-pass", "new_password": STRONG_PASSWORD},
+        format="json",
+    )
+    assert resp.status_code == 204
+    # Session is preserved after the change.
+    assert client.get("/api/v1/auth/me/").status_code == 200
+
+    student.refresh_from_db()
+    assert student.check_password(STRONG_PASSWORD)
+
+
+def test_password_change_rejects_wrong_current(client, student):
+    login_student(client)
+    resp = client.post(
+        "/api/v1/auth/password/change/",
+        {"current_password": "nope", "new_password": STRONG_PASSWORD},
+        format="json",
+    )
+    assert resp.status_code == 400
+    assert "current_password" in resp.json()["error"]["details"]
+
+
+def test_password_change_rejects_weak_new(client, student):
+    login_student(client)
+    resp = client.post(
+        "/api/v1/auth/password/change/",
+        {"current_password": "s3cret-pass", "new_password": "12345"},
+        format="json",
+    )
+    assert resp.status_code == 400
+    assert "new_password" in resp.json()["error"]["details"]
+
+
+def test_password_change_requires_authentication(client):
+    resp = client.post(
+        "/api/v1/auth/password/change/",
+        {"current_password": "x", "new_password": STRONG_PASSWORD},
+        format="json",
+    )
+    assert resp.status_code == 401
+
+
+# --- Password reset ---
+
+
+def test_password_reset_is_generic_and_emails_known_user(client, student, settings):
+    settings.MAILERS = {
+        "default": {"BACKEND": "django.core.mail.backends.locmem.EmailBackend"}
+    }
+    mail.outbox = []
+
+    # Unknown email: still 204, no email (no enumeration).
+    resp = client.post(
+        "/api/v1/auth/password/reset/",
+        {"email": "nobody@example.com"},
+        format="json",
+    )
+    assert resp.status_code == 204
+    assert len(mail.outbox) == 0
+
+    # Known email: 204 and an email is sent.
+    resp = client.post(
+        "/api/v1/auth/password/reset/",
+        {"email": "ada@example.com"},
+        format="json",
+    )
+    assert resp.status_code == 204
+    assert len(mail.outbox) == 1
+    assert "ada@example.com" in mail.outbox[0].to
+
+
+def test_password_reset_confirm_flow(client, student):
+    uid, token = reset_link_parts(student)
+    resp = client.post(
+        "/api/v1/auth/password/reset/confirm/",
+        {"uid": uid, "token": token, "new_password": STRONG_PASSWORD},
+        format="json",
+    )
+    assert resp.status_code == 204
+    student.refresh_from_db()
+    assert student.check_password(STRONG_PASSWORD)
+
+
+def test_password_reset_confirm_rejects_bad_token(client, student):
+    uid, _ = reset_link_parts(student)
+    resp = client.post(
+        "/api/v1/auth/password/reset/confirm/",
+        {"uid": uid, "token": "bad-token", "new_password": STRONG_PASSWORD},
+        format="json",
+    )
+    assert resp.status_code == 400
+
+
+def test_password_reset_confirm_rejects_weak_password(client, student):
+    uid, token = reset_link_parts(student)
+    resp = client.post(
+        "/api/v1/auth/password/reset/confirm/",
+        {"uid": uid, "token": token, "new_password": "12345"},
+        format="json",
+    )
+    assert resp.status_code == 400

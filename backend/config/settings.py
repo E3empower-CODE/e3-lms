@@ -174,6 +174,9 @@ CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = env_list("CSRF_TRUSTED_ORIGINS", "http://localhost:5173")
 
+# Public SPA base URL, used to build links in emails (e.g. password reset).
+FRONTEND_URL = env("FRONTEND_URL", "http://localhost:5173")
+
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = env("SESSION_COOKIE_SAMESITE", "Lax")
 CSRF_COOKIE_HTTPONLY = False
@@ -217,3 +220,5 @@ MAILERS = {
         ),
     },
 }
+
+DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", "no-reply@e3empower.local")
