@@ -1,5 +1,6 @@
 import uuid
 
+from rest_framework.response import Response
 from rest_framework.views import exception_handler
 
 # Map HTTP status to the API error `code` (see API.md — Error Shape).
@@ -18,6 +19,24 @@ CODE_BY_STATUS = {
 }
 
 GENERIC_VALIDATION_MESSAGE = "The submitted data is invalid."
+
+
+def error_response(status, code, message, *, details=None, request=None):
+    """Build a Response in the documented error envelope for cases a view needs
+    to shape directly (e.g. a domain-specific 409 code the generic handler's
+    status→code map would otherwise flatten)."""
+    request_id = getattr(request, "request_id", "") or uuid.uuid4().hex
+    return Response(
+        {
+            "error": {
+                "code": code,
+                "message": message,
+                "details": details,
+                "request_id": request_id,
+            }
+        },
+        status=status,
+    )
 
 
 def envelope_exception_handler(exc, context):
