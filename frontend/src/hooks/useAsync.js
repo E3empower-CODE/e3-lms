@@ -1,8 +1,13 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 /**
  * Run an async function and expose the four data-states. Re-runs whenever
- * `deps` change. Returns { status, data, error, retry, setData }.
+ * `deps` change, and on `retry()`. Returns { status, data, error, retry, setData }.
+ *
+ * A monotonic request id guards against races and unmount: only the most
+ * recently started request may update state, so a slow response that a newer
+ * fetch (deps change, retry) has superseded — or one that resolves after
+ * unmount — is discarded.
  *
  * @param {() => Promise<any>} asyncFn
  * @param {any[]} deps
@@ -14,26 +19,27 @@ export function useAsync(asyncFn, deps = []) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const run = useCallback(asyncFn, deps)
 
-  const load = useCallback(async () => {
+  const reqId = useRef(0)
+
+  const load = useCallback(() => {
+    const id = ++reqId.current
     setState({ status: 'loading', data: null, error: null })
-    try {
-      const data = await run()
-      setState({ status: 'success', data, error: null })
-    } catch (error) {
-      setState({ status: 'error', data: null, error })
-    }
+    run()
+      .then((data) => {
+        if (id === reqId.current) setState({ status: 'success', data, error: null })
+      })
+      .catch((error) => {
+        if (id === reqId.current) setState({ status: 'error', data: null, error })
+      })
   }, [run])
 
   useEffect(() => {
-    let active = true
-    setState({ status: 'loading', data: null, error: null })
-    run()
-      .then((data) => active && setState({ status: 'success', data, error: null }))
-      .catch((error) => active && setState({ status: 'error', data: null, error }))
+    load()
+    // Invalidate any in-flight request on unmount / before the next run.
     return () => {
-      active = false
+      reqId.current += 1
     }
-  }, [run])
+  }, [load])
 
   const setData = useCallback((updater) => {
     setState((prev) => ({

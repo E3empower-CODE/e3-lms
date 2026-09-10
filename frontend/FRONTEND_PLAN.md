@@ -1,13 +1,18 @@
 # E3 Empower LMS — Frontend Build Plan
 
-**Status:** Foundation plan. The app is currently the Vite starter; this document is the
-authoritative build order for the interactive frontend. It **maps onto** `PLAN.md`
-phases — it does not invent a parallel roadmap. Read `CLAUDE.md` (golden rules) and the
-`e3-design-system` skill before building.
+**Status:** Stages **P0–P10 are implemented** — foundations, auth, registration,
+admissions, student creation, the student and instructor portals, coursework
+(submission + grading), attendance, progress, finance/payments, and
+certificates/reporting. The UI targets the documented contracts, lints, builds, and is
+covered by unit, MSW integration, and Playwright smoke tests; it awaits the Django API
+for live data (endpoint paths are provisional and env-overridable). This document remains
+the authoritative architecture reference and **maps onto** `PLAN.md` phases — it does not
+invent a parallel roadmap. Read `CLAUDE.md` (golden rules) and the `e3-design-system`
+skill before building.
 
 **Stack:** React 19 + Vite 8 (JavaScript only) · react-router-dom 7 · react-hook-form 7 +
 zod 4 · axios · recharts · lucide-react · CSS Modules + tokens · vitest +
-@testing-library + playwright.
+@testing-library + MSW + playwright.
 
 ---
 
@@ -170,15 +175,22 @@ reads; reporting dashboards with charts, exports, pagination, and background gen
 
 ## 6. Testing strategy (from `PLAN.md`)
 
-- **Component tests** (vitest + @testing-library + jsdom): forms, conditional guardian
-  fields, route guards, tables, the four data-states, and accessibility (roles, labels,
-  focus).
-- **API-contract checks:** frontend expectations validated against the generated OpenAPI
-  schema; mock the API with MSW in tests.
-- **End-to-end** (Playwright): the release-blocking journey — register → approve → create
-  student → enroll → record payment → sign in → learn → attend → submit → assess →
-  complete → certify — plus negative authorization/tampering cases.
-- Run `npm run lint` and `npm run build` before every commit; `npm test -- --run` in CI.
+- **Unit + component tests** (vitest + @testing-library + jsdom): pure helpers (roles,
+  pagination, age, schemas, statuses, score/CSV safety) and components (Button, Input,
+  ProgressBar), covering the four data-states and accessibility (roles, labels, focus).
+- **Integration tests (MSW)** — *scaffolded.* `src/test/msw/` runs a Mock Service Worker
+  server in the vitest environment; component tests assert real axios calls against the
+  documented envelopes and the loading/empty/error/success states. Unhandled requests
+  fail the test. Seed: `src/features/student/MyCourses.test.jsx`. Grow this into
+  API-contract checks against the generated OpenAPI schema once the backend exists.
+- **End-to-end** (Playwright) — *scaffolded.* `e2e/` + `playwright.config.js` drive the
+  built app in a real browser. The current smoke suite runs without a backend (routing,
+  login validation, registration reachability, 404). Extend to the release-blocking
+  journey — register → approve → create student → enroll → record payment → sign in →
+  learn → attend → submit → assess → complete → certify — plus negative
+  authorization/tampering cases when the API is available.
+- Run `npm run lint` and `npm run build` before every commit; `npm test -- --run`
+  (and `npm run test:e2e`) in CI.
 
 ## 7. Risk watch-list
 
