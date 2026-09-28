@@ -227,3 +227,49 @@ class RegistrationCourse(TimeStampedModel):
 
     def __str__(self):
         return f"{self.course_name} ({self.fee_at_registration})"
+
+
+class ApplicationNote(TimeStampedModel):
+    """A free-text admissions note on an application."""
+
+    application = models.ForeignKey(
+        Application, on_delete=models.CASCADE, related_name="notes"
+    )
+    author = models.ForeignKey(
+        "accounts.User", on_delete=models.SET_NULL, null=True, related_name="+"
+    )
+    body = models.TextField()
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"Note on {self.application_id}"
+
+    @property
+    def author_name(self):
+        return self.author.name if self.author else "System"
+
+
+class ApplicationActivity(TimeStampedModel):
+    """Immutable audit trail of status transitions and notable events."""
+
+    application = models.ForeignKey(
+        Application, on_delete=models.CASCADE, related_name="activity"
+    )
+    actor = models.ForeignKey(
+        "accounts.User", on_delete=models.SET_NULL, null=True, related_name="+"
+    )
+    action = models.CharField(max_length=32)
+    description = models.CharField(max_length=255)
+
+    class Meta:
+        ordering = ["-created_at"]
+        verbose_name_plural = "application activity"
+
+    def __str__(self):
+        return self.description
+
+    @property
+    def actor_name(self):
+        return self.actor.name if self.actor else "System"

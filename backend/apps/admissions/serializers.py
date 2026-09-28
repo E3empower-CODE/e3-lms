@@ -175,3 +175,139 @@ class ApplicationReceiptSerializer(serializers.ModelSerializer):
         model = Application
         fields = ["id", "application_number", "status"]
         read_only_fields = fields
+
+
+# --- Admissions read + workflow (Phase 4) ---
+
+
+class ApplicationListSerializer(serializers.ModelSerializer):
+    """Row shape for the admissions list."""
+
+    applicant_name = serializers.CharField(source="applicant.full_name", read_only=True)
+    email = serializers.EmailField(source="applicant.email", read_only=True)
+
+    class Meta:
+        model = Application
+        fields = [
+            "id",
+            "application_number",
+            "applicant_name",
+            "email",
+            "status",
+            "created_at",
+        ]
+        read_only_fields = fields
+
+
+class RegistrationCourseSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    name = serializers.CharField(source="course_name", read_only=True)
+    fee_at_registration = serializers.DecimalField(
+        max_digits=10, decimal_places=2, read_only=True
+    )
+
+
+class ApplicationNoteSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    body = serializers.CharField()
+    author_name = serializers.CharField(read_only=True)
+    created_at = serializers.DateTimeField(read_only=True)
+
+
+class ApplicationActivitySerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    action = serializers.CharField(read_only=True)
+    description = serializers.CharField(read_only=True)
+    actor_name = serializers.CharField(read_only=True)
+    created_at = serializers.DateTimeField(read_only=True)
+
+
+class ApplicationDetailSerializer(serializers.ModelSerializer):
+    """Full application for the detail view — applicant/guardian/emergency
+    fields flattened to the top level, plus courses, notes, and activity."""
+
+    applicant_name = serializers.CharField(source="applicant.full_name", read_only=True)
+    first_name = serializers.CharField(source="applicant.first_name", read_only=True)
+    last_name = serializers.CharField(source="applicant.last_name", read_only=True)
+    birth_date = serializers.DateField(source="applicant.birth_date", read_only=True)
+    gender = serializers.CharField(source="applicant.gender", read_only=True)
+    nationality = serializers.CharField(source="applicant.nationality", read_only=True)
+    email = serializers.EmailField(source="applicant.email", read_only=True)
+    phone = serializers.CharField(source="applicant.phone", read_only=True)
+    address_line = serializers.CharField(source="applicant.address_line", read_only=True)
+    city = serializers.CharField(source="applicant.city", read_only=True)
+    state_region = serializers.CharField(source="applicant.state_region", read_only=True)
+    country = serializers.CharField(source="applicant.country", read_only=True)
+
+    guardian_full_name = serializers.SerializerMethodField()
+    guardian_relationship = serializers.SerializerMethodField()
+    guardian_phone = serializers.SerializerMethodField()
+
+    emergency_name = serializers.SerializerMethodField()
+    emergency_relationship = serializers.SerializerMethodField()
+    emergency_phone = serializers.SerializerMethodField()
+
+    courses = RegistrationCourseSerializer(many=True, read_only=True)
+    notes = ApplicationNoteSerializer(many=True, read_only=True)
+    activity = ApplicationActivitySerializer(many=True, read_only=True)
+
+    student_id = serializers.SerializerMethodField()
+    student_number = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Application
+        fields = [
+            "id", "application_number", "status", "created_at", "submitted_at",
+            "applicant_name", "first_name", "last_name", "birth_date", "gender",
+            "nationality", "email", "phone", "address_line", "city",
+            "state_region", "country",
+            "education_level", "institution", "current_level",
+            "previous_computer_training", "training_description",
+            "preferred_start_date", "preferred_session",
+            "has_computer_access", "reason_for_joining", "referral_source",
+            "guardian_full_name", "guardian_relationship", "guardian_phone",
+            "emergency_name", "emergency_relationship", "emergency_phone",
+            "courses", "notes", "activity", "student_id", "student_number",
+        ]
+
+    def _guardian(self, obj):
+        return getattr(obj, "guardian", None)
+
+    def get_guardian_full_name(self, obj) -> str:
+        g = self._guardian(obj)
+        return g.full_name if g else ""
+
+    def get_guardian_relationship(self, obj) -> str:
+        g = self._guardian(obj)
+        return g.relationship if g else ""
+
+    def get_guardian_phone(self, obj) -> str:
+        g = self._guardian(obj)
+        return g.phone if g else ""
+
+    def _emergency(self, obj):
+        return getattr(obj, "emergency_contact", None)
+
+    def get_emergency_name(self, obj) -> str:
+        e = self._emergency(obj)
+        return e.name if e else ""
+
+    def get_emergency_relationship(self, obj) -> str:
+        e = self._emergency(obj)
+        return e.relationship if e else ""
+
+    def get_emergency_phone(self, obj) -> str:
+        e = self._emergency(obj)
+        return e.phone if e else ""
+
+    def get_student_id(self, obj) -> int | None:
+        student = getattr(obj, "student", None)
+        return student.id if student else None
+
+    def get_student_number(self, obj) -> str | None:
+        student = getattr(obj, "student", None)
+        return student.student_number if student else None
+
+
+class TransitionSerializer(serializers.Serializer):
+    reason = serializers.CharField(required=False, allow_blank=True, default="")
